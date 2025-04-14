@@ -25,7 +25,8 @@ public class User implements UserDetails {
     private String email;
     @Column(name = "password",nullable = false)
     private String password;
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    private List<Project> projects;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

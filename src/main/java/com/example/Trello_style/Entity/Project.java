@@ -20,4 +20,7 @@ public class Project {
     private String name;
     @Column(name = "description",nullable = false)
     private String description;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
