@@ -7,12 +7,14 @@ import com.example.Trello_style.Entity.User;
 import com.example.Trello_style.Repo.UserRepo;
 import com.example.Trello_style.Service.AuthService;
 import com.example.Trello_style.Service.JwtService;
+import com.example.Trello_style.Validation.OnCreate;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +31,7 @@ public class AuthController {
     private final JwtService jwtService;
     private final UserRepo userRepo;
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request){
+    public ResponseEntity<UserResponse> register(@Validated(OnCreate.class) @RequestBody RegisterRequest request){
         UserResponse newUser = authService.register(request);
         return ResponseEntity.ok(newUser);
     }
