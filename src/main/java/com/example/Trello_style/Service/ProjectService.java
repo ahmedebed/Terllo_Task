@@ -8,6 +8,7 @@ import com.example.Trello_style.Excptions.ProjectNotFoundExcption;
 import com.example.Trello_style.Excptions.UserNotFoundExceptions;
 import com.example.Trello_style.Repo.ProjectRepo;
 import com.example.Trello_style.Repo.UserRepo;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,9 +50,11 @@ public class ProjectService {
         if (project.getUser().getId()!=user.getId()){
             throw new UserNotFoundExceptions(userId);
         }
-        return ProjectResponse.mapToBasicProjectResponse(project);
-    }
+        // check if list of tasks is empty if true return em
 
+        return ProjectResponse.mapToDetailesProjectResponse(project);
+    }
+    @Transactional
     public void deleteProject(long id, long userId) {
         User user=userRepo.findById(userId)
                 .orElseThrow(()->new UserNotFoundExceptions(userId));
@@ -59,6 +62,9 @@ public class ProjectService {
                 .orElseThrow(()->new ProjectNotFoundExcption(id));
         if (project.getUser().getId()!=user.getId()){
             throw new UserNotFoundExceptions(userId);
+        }
+        if (!project.getTasks().isEmpty()) {
+            throw new IllegalStateException("Project cannot be deleted because it has tasks associated with it.");
         }
         projectRepo.delete(project);
     }
